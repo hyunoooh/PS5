@@ -1,0 +1,13 @@
+Package: FitStatisticsPack
+Title: Calculating fit statistics
+Version: 0.1
+Author: Hyunjoo Oh
+Maintainer: Hyunjoo Oh <hyunjoo.oh@wustl.edu>
+Description: Calculate the fit of various statistical models.
+Depends:
+    R (>= 3.0.0),
+    methods
+License: GPL (>= 2)
+Suggests:
+    devtools
+RoxygenNote: 5.0.1

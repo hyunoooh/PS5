@@ -1,0 +1,62 @@
+
+R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "FitStatisticsPack"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('FitStatisticsPack')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("FitStatistics")
+> ### * FitStatistics
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: FitStatistics
+> ### Title: Calculating fit statistics
+> ### Aliases: FitStatistics FitStatistics,ANY-method
+> 
+> ### ** Examples
+> 
+> 
+> myX <- rnorm(100, 0, 1) 
+> myY <- sample(size = 100, seq(1:1000))
+> p <- matrix(predict(lm(myY ~ myX), ncol=1))
+> r <- sample(min(myY):max(myY), 100, replace = TRUE)
+> FitStatistics(y=myY, p=p, r=r, fits=c("rmse", "mad", "meape"))
+         RMSE     MAD    MEAPE
+[1,] 286.5524 241.812 49.70826
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  0.074 0.006 0.151 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

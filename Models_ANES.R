@@ -8,7 +8,7 @@ rm(list=ls())
 # set the working directory:
 setwd('/Users/hyunjoooh/Desktop/2017_Stat_Prog/PS5')
 
-##### 1-A #####
+# Q1. ===============================
 # Foreign makes it easier to read .dta into R 
 library(foreign)
 library(AER)
@@ -157,6 +157,8 @@ model.3 <- tobit(ft_dpc ~ mediapo_tv+mediapo_radio+mediapo_nwsprev+mediapo_net,
 summary(model.3)
 
 
+
+# Q2. ===============================
 ### Make predictions for the other partition of the data:
 # model.1:
 predict.model.1 <- predict(model.1, newdata = my.anes[!taining.set,], 
@@ -173,5 +175,8 @@ test.set <- matrix(c(predict.model.1, predict.model.2, predict.model.3), ncol = 
 colnames(test.set) <- c("OLS.interaction", "OLS", "Tobit")
 
 
+# Q3. ===============================
+### Use our package: FitStatistics
+library(FitStatistics)
 
-### Use our package: 
+# Q4. ===============================
