@@ -11,6 +11,13 @@ setwd('/Users/hyunjoooh/Desktop/2017_Stat_Prog/PS5')
 ##### 1-A #####
 # Foreign makes it easier to read .dta into R 
 library(foreign)
+library(AER)
+library(stats)
+require(car)
+require(ggplot2)
+require(GGally)
+require(VGAM)
+
 # Load the data
 ANES <- read.dta('anes_timeseries_2012_stata12.dta')
 
@@ -51,7 +58,7 @@ my.anes$interest_whovote2008 <- ifelse(my.anes$interest_whovote2008 == "-1. Inap
                                       ifelse(my.anes$interest_whovote2008 == "1. Barack obama", 1, 0
 ))
 
-# how people concive the state of national economy:
+# how people concieve the state of national economy:
 # Very good = 5, Good = 4, Neither good nor bad = 3, Bad=2, Very bad=1
 summary(my.anes$econ_ecnow) # now
 my.anes$econ_ecnow <- ifelse(my.anes$econ_ecnow == "-9. Refused" |
@@ -102,4 +109,69 @@ my.anes$mediapo_net <- ifelse(my.anes$mediapo_net == "-9. Refused" |
                                my.anes$mediapo_net == "-7. Deleted due to partial (post-election) interview" |
                                my.anes$mediapo_net == "-6. Not asked, unit nonresponse (no post-election interview)", NA,
                              ifelse(my.anes$mediapo_net == "1. Yes", 1, 0))
+# check if variables are coded in a right way:
+unique(my.anes$mediapo_net)
+unique(my.anes$mediapo_nwsprev)
+unique(my.anes$mediapo_radio)
+unique(my.anes$mediapo_tv)
 
+
+### Randomly subset the data into two partitions:
+training.set <- my.anes[sample(1:nrow(my.anes), nrow(my.anes)/2, replace = FALSE),]
+
+### model.1: OLS model
+###          how does the feeling thermometer for republican candidate 
+###          and how they voted in 2008 election relate to 
+###          how much they like the democratic candidate, Pr.Obama 
+### Y = feeling thermometer score for Pr.Obama
+### X1 = feeling thermometer score for McCain
+### X2 = whether they voted for Pr.Obama in the 2008 election
+### X1*X2 = interaction term
+
+model.1 <- lm(ft_dpc ~ ft_rpc*interest_whovote2008, data = training.set)
+summary(model.1)
+
+### model.2: OLS model
+###          how does the perception of national economy 
+###          affect the feeling themometer for Pr.Obama
+### Y = feeling thermometer score for Pr.Obama
+### X1 = perception of national economy (Past)
+### X2 = perception of national economy (Now)
+### X3 = perception of national economy (Future)
+
+model.2 <- lm(ft_dpc ~ econ_ecpast+econ_ecnow+econ_ecnext, data = training.set)
+summary(model.2)
+
+### model.3: Tobit model
+###          depending on the type of media exposure 
+###          how feeling themometer for Pr.Obama differs
+### Y = feeling thermometer score for Pr.Obama
+### X1 = media exposure: TV
+### X2 = media exposure: radio
+### X3 = media exposure: newspaper
+### X4 = media exposure: internet
+
+ggpairs(training.set[, c("mediapo_tv", "mediapo_radio", "mediapo_nwsprev", "mediapo_net")])
+model.3 <- tobit(ft_dpc ~ mediapo_tv+mediapo_radio+mediapo_nwsprev+mediapo_net,
+                 data=taining.set, left = 0, right = 100)
+summary(model.3)
+
+
+### Make predictions for the other partition of the data:
+# model.1:
+predict.model.1 <- predict(model.1, newdata = my.anes[!taining.set,], 
+                           type = 'response')
+# model.2:
+predict.model.2 <- predict(model.2, newdata = my.anes[!taining.set,], 
+                           type = 'response')
+# model.3:
+predict.model.3 <- predict(model.3, newdata = my.anes[!taining.set,], 
+                           type = 'response')
+
+### Generate a test set:
+test.set <- matrix(c(predict.model.1, predict.model.2, predict.model.3), ncol = 3)
+colnames(test.set) <- c("OLS.interaction", "OLS", "Tobit")
+
+
+
+### Use our package: 
