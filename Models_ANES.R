@@ -177,6 +177,23 @@ colnames(test.set) <- c("OLS.interaction", "OLS", "Tobit")
 
 # Q3. ===============================
 ### Use our package: FitStatistics
-library(FitStatistics)
+library(FitStatisticsPack)
 
-# Q4. ===============================
+my.y <- my.anes[!taining.set,"ft_dpc"]
+my.y <- as.matrix(my.y)
+colnames(my.y) <- 'like.Obama'
+
+my.r <- as.matrix(rep(median(my.y), nrow(my.y)))
+my.p <- test.set
+
+# check the number of rows
+nrow(my.y)
+nrow(my.p)
+nrow(my.r)
+
+# errors...
+FitStatistics(y=my.y, p=my.p, r=my.r, fits=c("rmse"))
+FitStatistics(y=my.y, p=my.p, r=my.r, fits=c("mad"))
+FitStatistics(y=my.y, p=my.p, r=my.r, fits=c("mape"))
+FitStatistics(y=my.y, p=my.p, r=my.r, fits=c("meape"))
+FitStatistics(y=my.y, p=my.p, r=my.r, fits=c("rmsle"))

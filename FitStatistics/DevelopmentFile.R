@@ -16,23 +16,4 @@ load_all(current.code)
 document(current.code)
 test(current.code)
 
-## Let's look at a function
-getSquares
-getMethod(getSquares, "Squares")
-getMethod(getSquares, "AllSquares")
-getMethod(allSquares)
-
-## Let's try it out
-x<-c(1,2)
-y<-c(3,4)
-allObj <- allSquares(x, y)
-allObj
-getSquares(allObj)
-
-## Moving between classes
-addObj <- addSquares(x,y)
-addObj
-as(object=addObj, Class="AllSquares")
-
-
-
+library(FitStatisticsPack)
